@@ -30,15 +30,12 @@ def plotComplex(fig, cplx_image):
 
     """
 
-    # calculate the intensity and phase
-    amp = np.abs( cplx_image ) ** 2
-    pha = np.angle( cplx_image )
+    # prepare the two custom colourmaps for phase and intensity
 
     from matplotlib.colors import LinearSegmentedColormap
 
-    gs = fig.add_subplot(1,2,2)
-
-    kwargs = dict(origin="lower", interpolation="nearest")
+    plt.rc('image', origin='lower', interpolation='nearest')
+    plt.rc('text', usetex=True)
 
     # red       1 0 0
     # green     0 1 0
@@ -62,6 +59,8 @@ def plotComplex(fig, cplx_image):
 
     phase_cmap = LinearSegmentedColormap('phase_colormap',cdict,256)
 
+    # intensity
+
     graydict = {'red': ((0.0, 0.0, 0.0),
                         (1.0, 1.0, 1.0)),
              'green': ( (0.0, 0.0, 0.0),
@@ -71,7 +70,17 @@ def plotComplex(fig, cplx_image):
 
     gray_cmap = LinearSegmentedColormap('gray_colormap',graydict,256)
 
-    im1 = gs.imshow(pha, vmin = 0, vmax = np.pi * 2, cmap=phase_cmap, **kwargs)
+    # calculate the intensity and phase
+    amp = np.abs( cplx_image ) ** 2
+    pha = np.angle( cplx_image )
+
+    # phase plot
+    gs = fig.add_subplot(1,2,2)
+
+    print gs
+    #    fig.add_axes([0.1, 0.1, 0.6, 0.8])
+
+    im1 = gs.imshow(pha, vmin = 0, vmax = np.pi * 2, cmap=phase_cmap)
     # add a colourbar for phase
     cbar = plt.colorbar(im1, ticks=[0, np.pi, np.pi * 2])
     cbar.ax.set_yticklabels(['$0$','$\pi$','$2\pi$'])
@@ -80,7 +89,7 @@ def plotComplex(fig, cplx_image):
     psnorm -= np.max(psnorm)
 
     gs = fig.add_subplot(1,2,1)
-    im2 = gs.imshow( psnorm, cmap=gray_cmap, vmin = -6, vmax = 0, **kwargs)
+    im2 = gs.imshow( psnorm, cmap=gray_cmap, vmin = -6, vmax = 0)
     # add a colourbar for log intensity
     cbar = plt.colorbar(im2, ticks=[0, -1, -2, -3, -4, -5, -6])
 
